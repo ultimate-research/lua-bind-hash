@@ -19,7 +19,7 @@
 #define DELTA11 0x779b185ebca87000
 #define DELTA12 -0x1939e850d5e40000
 #define DELTA13 -0x7a1435883d4d519d
-#define DELTA14 0x6c158a5880000000
+#define DELTA14 -0x6c158a5880000000
 
 #define SHUFFLE1(a, b, c, d) (a * b | c >> d)
 #define SHUFFLE2(a, b, c) a * b | a * c >> 0x21

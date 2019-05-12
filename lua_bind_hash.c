@@ -47,7 +47,7 @@ uint64_t lua_bind_hash(void *data_, uint64_t len) {
 
 		do 
 		{
-			hash = hash + data[0] * DELTA2;
+			hash += data[0] * DELTA2;
 			temp[0] = hash >> 0x21 | hash << 0x1F;
 			temp[4] = temp[4] + data[1] * DELTA2;
 			temp[2] = temp[2] + data[2] * DELTA2;

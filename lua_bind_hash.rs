@@ -1,7 +1,7 @@
 use std::{mem, slice};
 
 #[allow(non_snake_case)]
-fn lua_bind_hash(data_bytes: &[u8]) -> u64 {
+pub fn lua_bind_hash(data_bytes: &[u8]) -> u64 {
     let mut len = data_bytes.len() as u64;
     
     let mut hash_vals: [u64; 4] = [
@@ -97,7 +97,7 @@ fn lua_bind_hash(data_bytes: &[u8]) -> u64 {
     uVar3 ^ uVar3 >> 0x20
 }
 
-fn lua_bind_hash_str<S: AsRef<str>>(string: S) -> u64 {
+pub fn lua_bind_hash_str<S: AsRef<str>>(string: S) -> u64 {
     lua_bind_hash(string.as_ref().as_bytes())   
 }
 
@@ -108,7 +108,23 @@ fn main() {
         "FIGHTER_STATUS_DAMAGE_WORK_FLOAT_VECOR_CORRECT_STICK_X",
     ];
     for test in tests {
-        println!("String - '{}', Hash - {:X}", test, lua_bind_hash_str(test));
+        println!("Hash of '{}' = {:x}", test, lua_bind_hash_str(test));
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_all_test_strings() {
+        let tests = vec![
+            ("password", 0xe58325ff3537c13a), 
+            ("password1234", 0xa26a67b576fe1e83),
+            ("FIGHTER_STATUS_DAMAGE_WORK_FLOAT_VECOR_CORRECT_STICK_X", 0xa4d50a730e36970e),
+        ];
+        for test in tests {
+            assert_eq!(lua_bind_hash_str(test.0), test.1);
+        }
+    }
+}

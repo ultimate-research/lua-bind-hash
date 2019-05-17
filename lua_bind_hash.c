@@ -43,22 +43,22 @@ uint64_t lua_bind_hash(void* data_, size_t len) {
     
     if (len >= 32) {
         do {
-          for (int i = 0; i < 4; i++) {
-            hash_vals[i] += data[i] * MULT4;
-            hash_vals_mid[i] = hash_vals[i] >> 0x21 | hash_vals[i] * 0x80000000;
-            hash_vals[i] = hash_vals_mid[i] * MULT3;
-          }
+            for (int i = 0; i < 4; i++) {
+                hash_vals[i] += data[i] * MULT4;
+                hash_vals_mid[i] = hash_vals[i] >> 0x21 | hash_vals[i] * 0x80000000;
+                hash_vals[i] = hash_vals_mid[i] * MULT3;
+            }
           
-          data = data + 4;
+            data = data + 4;
         } while (data <= data_end + -4);
+
         uint64_t val = 0;
         for (int i = 0; i < 4; i++) {
-          val += (hash_vals_mid[i] * hash_vals_end[i] | hash_vals[i] >> hash_vals_end_2[i]);
+            val += (hash_vals_mid[i] * hash_vals_end[i] | hash_vals[i] >> hash_vals_end_2[i]);
         }
-
         val = (val ^ (hash_vals_mid[0] * MULT1 | hash_vals_mid[0] * MULT2 >> 0x21) * MULT3) * MULT3;
         for (int i = 1; i < 4; i++) {
-          val = (val + ADD1 ^ (hash_vals_mid[i] * MULT1 | hash_vals_mid[i] * MULT2 >> 0x21) * MULT3) * MULT3;
+            val = (val + ADD1 ^ (hash_vals_mid[i] * MULT1 | hash_vals_mid[i] * MULT2 >> 0x21) * MULT3) * MULT3;
         }
         val += ADD1;
 
@@ -67,9 +67,9 @@ uint64_t lua_bind_hash(void* data_, size_t len) {
 
     hash += hash_add;
     for (; data + 1 <= data_end; data++) {
-      hash = (*data * MULT5 | (*data * MULT4) >> 0x21) *
+        hash = (*data * MULT5 | (*data * MULT4) >> 0x21) *
                     MULT3 ^ hash;
-      hash = (hash >> 0x25 | hash << 0x1b) * MULT3 + ADD1;
+        hash = (hash >> 0x25 | hash << 0x1b) * MULT3 + ADD1;
     }
 
     int32_t* data_32 = (int32_t*) data; 
@@ -82,9 +82,9 @@ uint64_t lua_bind_hash(void* data_, size_t len) {
     int8_t* data_8 = (int8_t*) data;
 
     for (; data != data_end; data = (int64_t*)data_8) {
-      hash = (uint64_t)(*data_8) * MULT6 ^ hash;
-      hash = (hash >> 0x35 | hash << 0xb) * MULT3;
-      data_8++;
+        hash = (uint64_t)(*data_8) * MULT6 ^ hash;
+        hash = (hash >> 0x35 | hash << 0xb) * MULT3;
+        data_8++;
     }
     
     uint64_t final_hash = (hash ^ hash >> 0x21) * MULT4;
@@ -97,9 +97,14 @@ uint64_t lua_bind_hash_str(char* str) {
 }
 
 int main() {
-    printf("Hash of 'password' = %" PRIx64 "\n", lua_bind_hash_str("password"));
-    printf("Hash of 'password1234' = %" PRIx64 "\n", lua_bind_hash_str("password1234"));
-    printf("Hash of 'FIGHTER_STATUS_DAMAGE_WORK_FLOAT_VECOR_CORRECT_STICK_X' = %" PRIx64 "\n", lua_bind_hash_str("FIGHTER_STATUS_DAMAGE_WORK_FLOAT_VECOR_CORRECT_STICK_X"));
+    char* tests[] = {
+        "password",
+        "password1234",
+        "FIGHTER_STATUS_DAMAGE_WORK_FLOAT_VECOR_CORRECT_STICK_X"
+    };
+    for(int i = 0; i < 3; i++) {
+        printf("Hash of '%s' = %" PRIx64 "\n", tests[i], lua_bind_hash_str(tests[i]));
+    }
 
     return 0;
 }

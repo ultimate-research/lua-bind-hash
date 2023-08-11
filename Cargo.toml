@@ -1,6 +1,6 @@
 [package]
 name = "lua_bind_hash"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["jam1garner <jam1.mcleod@hotmail.com>", "jugeeya <jugeeya@live.com>"]
 edition = "2018"
 
